@@ -1,0 +1,15 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# PowerShell scripts should use CRLF on Windows
+*.ps1 text eol=crlf
+
+# Markdown and other text files
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Keep these binary
+*.png binary
+*.jpg binary
+*.gif binary
