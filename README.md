@@ -19,9 +19,19 @@ FortiClient VPN is notoriously aggressive — it hijacks **all** your internet t
 | **Admin Auto-Escalation** | Requests Administrator privileges automatically if needed |
 | **Configurable** | Simple variables at the top of the script — customize networks, DNS, and adapter |
 
-## 🛠️ Installation & Usage
+## 🚀 Installation & Usage
 
-### Quick Start
+### Quick Install (PowerShell)
+
+Run this command in **PowerShell** to install FortiSplit globally. This will allow you to run `fortisplit` from any terminal (CMD or PowerShell) at any time.
+
+```powershell
+irm https://raw.githubusercontent.com/sakirsek/FortiSplit/main/install.ps1 | iex
+```
+
+*Note: You may need to restart your terminal after installation.*
+
+### Manual Installation
 
 1. **Download** `FortiSplit.ps1` (or clone this repo).
 2. **Connect** to your VPN via FortiClient.
