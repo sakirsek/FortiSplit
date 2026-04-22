@@ -23,13 +23,20 @@ FortiClient VPN is notoriously aggressive — it hijacks **all** your internet t
 
 ### Quick Install (PowerShell)
 
-Run this command in **PowerShell** to install FortiSplit globally. This will allow you to run `fortisplit` from any terminal (CMD or PowerShell) at any time.
+Run this command in **PowerShell** to install FortiSplit globally:
 
 ```powershell
 irm https://raw.githubusercontent.com/sakirsek/FortiSplit/main/install.ps1 | iex
 ```
 
-*Note: You may need to restart your terminal after installation.*
+**After installation, you can simply type this in any terminal (CMD or PowerShell):**
+
+```bash
+fortisplit
+```
+
+> [!TIP]
+> If the command is not recognized immediately, please restart your terminal window to refresh the environment variables.
 
 ### Manual Installation
 
