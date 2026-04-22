@@ -14,7 +14,7 @@ FortiClient VPN is notoriously aggressive — it hijacks **all** your internet t
 |---|---|
 | **Automated Routing** | Routes only corporate IPs (e.g. `10.x.x.x`) through VPN; everything else goes to your local ISP |
 | **DNS Leak Fix** | Restores your preferred DNS (Google / Cloudflare) while FortiClient is active |
-| **Auto-Detection** | Automatically finds both local (Wi-Fi / Ethernet) and VPN adapters — no manual ID lookup |
+| **Auto-Detection** | Language-independent detection (route-based) finds your local adapter and VPN automatically |
 | **Local Subnet Cleanup** | Detects and removes VPN-injected routes that conflict with your home/office network |
 | **Admin Auto-Escalation** | Requests Administrator privileges automatically if needed |
 | **Configurable** | Simple variables at the top of the script — customize networks, DNS, and adapter |
@@ -55,7 +55,7 @@ When you run FortiSplit, it performs these steps in order:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│ 1. Detect local adapter (Wi-Fi / Ethernet)      │
+│ 1. Detect local adapter (via internet route)    │
 │ 2. Detect FortiClient VPN adapter               │
 │ 3. Set local adapter to HIGH priority (metric 5) │
 │ 4. Remove VPN's default route (0.0.0.0/0)       │
@@ -109,7 +109,7 @@ $LOCAL_ADAPTER_OVERRIDE = $null       # Auto-detect (recommended)
 | Problem | Solution |
 |---|---|
 | "No active FortiClient VPN adapter found" | Connect to VPN first, wait ~10 seconds, then run the script |
-| "No active local network adapter found" | Check that your Wi-Fi or Ethernet is connected. If your adapter has an unusual name, set `$LOCAL_ADAPTER_OVERRIDE` |
+| "No active local network adapter found" | Ensure you are connected to the internet. The script now uses your active internet route to find the adapter, so it works even if your adapter has a non-English name. |
 | Script closes immediately | Right-click → "Run with PowerShell" or run from a PowerShell terminal |
 | DNS not resolving after script | Try running `ipconfig /flushdns` manually, or restart your browser |
 | Corporate app stopped working | Make sure the app's IP range is listed in `$TARGET_NETWORKS` |

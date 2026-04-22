@@ -19,7 +19,7 @@
 #   .\FortiSplit.ps1 -SkipDnsRestore  # Run without modifying DNS
 #
 # Author  : sakirsek
-# Version : 2.0.0
+# Version : 2.1.0
 # License : MIT
 # Requires: Administrator privileges, PowerShell 5.1+
 # Repo    : https://github.com/sakirsek/FortiSplit
@@ -73,7 +73,7 @@ $LOCAL_ADAPTER_OVERRIDE = $null
 #  INTERNAL — No need to edit below this line
 # ============================================================================
 
-$SCRIPT_VERSION = "2.0.0"
+$SCRIPT_VERSION = "2.1.0"
 
 # --- UI Helpers -----------------------------------------------------------
 
@@ -136,9 +136,9 @@ function Wait-KeyPress {
 
 function Find-LocalAdapter {
     # Finds the active local network adapter (Wi-Fi or Ethernet).
-    # Returns the ifIndex of the adapter, or $null if not found.
+    # Returns the ifIndex and Name of the adapter, or $null if not found.
 
-    # If user explicitly set an override, use that
+    # 0. Manual Override: If user explicitly set an override, use that
     if ($LOCAL_ADAPTER_OVERRIDE) {
         $adapter = Get-NetIPInterface -InterfaceAlias $LOCAL_ADAPTER_OVERRIDE -AddressFamily IPv4 -ErrorAction SilentlyContinue
         if ($adapter) {
@@ -150,35 +150,42 @@ function Find-LocalAdapter {
         Write-Warn "Override adapter '$LOCAL_ADAPTER_OVERRIDE' not found. Falling back to auto-detect."
     }
 
-    # Auto-detect: prefer Wi-Fi, then Ethernet, then any connected physical adapter
-    $candidates = @("Wi-Fi", "Ethernet", "Ethernet 2", "Local Area Connection")
+    # 1. PRIMARY METHOD: Track the internet route (0.0.0.0)
+    # This is the most reliable way to find the active interface providing internet,
+    # and it is completely language-independent.
+    $activeRoute = Get-NetRoute -DestinationPrefix "0.0.0.0/0" -AddressFamily IPv4 -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.NextHop -ne "0.0.0.0" -and
+            $_.InterfaceAlias -notlike "*Fortinet*" -and
+            $_.InterfaceAlias -notlike "*VPN*"
+        } |
+        Sort-Object RouteMetric |
+        Select-Object -First 1
 
-    foreach ($name in $candidates) {
-        $iface = Get-NetIPInterface -InterfaceAlias $name -AddressFamily IPv4 -ErrorAction SilentlyContinue
-        if ($iface -and $iface.ConnectionState -eq "Connected") {
-            return @{
-                Index = $iface.ifIndex
-                Name  = $name
-            }
+    if ($activeRoute) {
+        return @{
+            Index = $activeRoute.InterfaceIndex
+            Name  = $activeRoute.InterfaceAlias
         }
     }
 
-    # Last resort: find any connected physical adapter that is NOT Fortinet
+    # 2. FALLBACK METHOD: Physical hardware scan
+    # If no default route is found (e.g. VPN disconnected and no internet),
+    # find the fastest physical adapter that is "Up".
     $fallback = Get-NetAdapter |
         Where-Object {
             $_.Status -eq "Up" -and
+            $_.HardwareInterface -eq $true -and
             $_.InterfaceDescription -notlike "*Fortinet*" -and
-            $_.InterfaceDescription -notlike "*Virtual*" -and
-            $_.InterfaceDescription -notlike "*Loopback*"
-        } | Select-Object -First 1
+            $_.InterfaceDescription -notlike "*Virtual*"
+        } |
+        Sort-Object -Property @{Expression={$_.LinkSpeed}; Descending=$true} |
+        Select-Object -First 1
 
     if ($fallback) {
-        $iface = Get-NetIPInterface -InterfaceIndex $fallback.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue
-        if ($iface) {
-            return @{
-                Index = $fallback.ifIndex
-                Name  = $fallback.Name
-            }
+        return @{
+            Index = $fallback.ifIndex
+            Name  = $fallback.Name
         }
     }
 

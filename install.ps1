@@ -33,7 +33,12 @@ if (-not (Test-Path $installDir)) {
 }
 
 # 2. Download script
-Write-Host "  [2/4] Downloading FortiSplit.ps1 from GitHub..." -ForegroundColor Gray
+if (Test-Path $psPath) {
+    Write-Host "  [2/4] Updating FortiSplit.ps1 from GitHub..." -ForegroundColor Gray
+} else {
+    Write-Host "  [2/4] Downloading FortiSplit.ps1 from GitHub..." -ForegroundColor Gray
+}
+
 try {
     Invoke-WebRequest -Uri $repoUrl -OutFile $psPath -UseBasicParsing
 } catch {

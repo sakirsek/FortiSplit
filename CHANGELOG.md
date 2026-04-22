@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] - 2026-04-22
+
+### Improved
+- **Robust Adapter Detection**: Replaced name-based detection with route-based (0.0.0.0) tracking. This makes the script language-independent (works on non-English Windows).
+- **Physical Hardware Filtering**: Added `HardwareInterface` check to automatically ignore virtual adapters (WSL, Hyper-V, VMware).
+- **Auto-Prioritization**: If multiple physical adapters are active, the script now automatically picks the fastest one based on `LinkSpeed`.
+
 ## [2.0.0] - 2026-04-14
 
 ### Added
