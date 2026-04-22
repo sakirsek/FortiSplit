@@ -21,8 +21,11 @@
 # Author  : sakirsek
 # Version : 2.1.0
 # License : MIT
-# Requires: Administrator privileges, PowerShell 5.1+
 # Repo    : https://github.com/sakirsek/FortiSplit
+# 
+# DISCLAIMER: This script is provided "AS IS" without warranty of any kind. 
+# The user is solely responsible for compliance with corporate IT policies.
+# The author is not liable for any network issues or security violations.
 # =============================================================================
 
 param(

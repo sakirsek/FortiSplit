@@ -131,7 +131,11 @@ $PREFERRED_DNS = @("8.8.8.8", "1.1.1.1")
 
 ## ⚠️ Security Disclaimer
 
-This script modifies local routing tables and DNS settings. These changes are temporary and reset when you disconnect VPN or reboot. However, **ensure this complies with your company's IT security policy** before use.
+**Use this script at your own risk.** 
+
+This script modifies local routing tables and DNS settings. While these changes are temporary and typically reset upon VPN disconnection or reboot, you are **solely responsible** for ensuring that using this tool complies with your organization's IT security policies and terms of service. 
+
+The author(s) shall not be held liable for any security breaches, policy violations, data loss, or network instability caused by the use of this script. This software is provided "as is", without warranty of any kind.
 
 ## 🤝 Contributing
 
