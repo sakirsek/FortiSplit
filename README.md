@@ -56,6 +56,9 @@ fortisplit
 .\FortiSplit.ps1 -SkipDnsRestore
 ```
 
+> [!IMPORTANT]
+> **Re-run after every connection:** FortiClient resets all routing and DNS settings every time you connect or reconnect to the VPN. You must run `fortisplit` again after each reconnection to restore split tunneling.
+
 ## ⚙️ How It Works
 
 When you run FortiSplit, it performs these steps in order:
